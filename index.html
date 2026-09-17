@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>portscan // local console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="scanlines" aria-hidden="true"></div>
+
+<div class="wrap">
+
+  <header class="hdr">
+    <div class="hdr-title">
+      <span class="prompt">$</span>
+      <h1>portscan<span class="cursor">_</span></h1>
+    </div>
+    <p class="hdr-sub">A real TCP connect-scanner, running locally in your browser tab. Only scan hosts you own or are authorized to test.</p>
+  </header>
+
+  <section class="panel controls">
+    <div class="field">
+      <label for="host">TARGET HOST</label>
+      <input id="host" type="text" placeholder="127.0.0.1 or example.com" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="field">
+      <label for="portMode">PORTS</label>
+      <select id="portMode">
+        <option value="common" selected>Common ports (~25)</option>
+        <option value="custom">Custom range / list</option>
+      </select>
+    </div>
+
+    <div class="field field-ports" id="customPortsField" hidden>
+      <label for="portSpec">PORT SPEC</label>
+      <input id="portSpec" type="text" placeholder="e.g. 1-1024 or 22,80,443" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="field mode-field">
+      <label>MODE</label>
+      <div class="toggle" id="modeToggle" role="radiogroup" aria-label="Scan mode">
+        <button type="button" class="toggle-opt active" data-mode="simulate" role="radio" aria-checked="true">SIMULATED</button>
+        <button type="button" class="toggle-opt" data-mode="real" role="radio" aria-checked="false">REAL</button>
+      </div>
+    </div>
+
+    <button id="scanBtn" class="scan-btn">
+      <span class="scan-btn-label">RUN SCAN</span>
+    </button>
+  </section>
+
+  <p id="errorMsg" class="error-msg" hidden></p>
+
+  <section class="panel stage">
+    <div class="stage-idle" id="stageIdle">
+      <div class="radar">
+        <div class="radar-ring r1"></div>
+        <div class="radar-ring r2"></div>
+        <div class="radar-ring r3"></div>
+        <div class="radar-dot"></div>
+      </div>
+      <p class="stage-idle-text">Awaiting target. Configure a host above and run a scan.</p>
+    </div>
+
+    <div class="stage-scanning" id="stageScanning" hidden>
+      <div class="radar sweeping">
+        <div class="radar-ring r1"></div>
+        <div class="radar-ring r2"></div>
+        <div class="radar-ring r3"></div>
+        <div class="radar-sweep"></div>
+      </div>
+      <p class="stage-scanning-text" id="scanningLabel">Scanning<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+    </div>
+
+    <div class="stage-results" id="stageResults" hidden>
+      <div class="results-summary">
+        <div class="summary-item">
+          <span class="summary-label">HOST</span>
+          <span class="summary-value" id="resHost">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">RESOLVED</span>
+          <span class="summary-value" id="resIp">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">DURATION</span>
+          <span class="summary-value" id="resDuration">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">OPEN</span>
+          <span class="summary-value summary-open" id="resOpenCount">—</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">MODE</span>
+          <span class="summary-value" id="resMode">—</span>
+        </div>
+      </div>
+
+      <div class="port-grid" id="portGrid" aria-label="Port state grid"></div>
+
+      <table class="results-table">
+        <thead>
+          <tr>
+            <th>PORT</th>
+            <th>STATE</th>
+            <th>SERVICE</th>
+            <th>LATENCY</th>
+            <th>BANNER</th>
+          </tr>
+        </thead>
+        <tbody id="resultsBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="ftr">
+    <span>local Flask app &middot; no data leaves your machine except packets sent to the target you specify</span>
+  </footer>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

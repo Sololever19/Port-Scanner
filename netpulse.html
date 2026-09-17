@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NETPULSE — Network Reconnaissance &amp; Traffic Console</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='netpulse.css') }}">
+</head>
+<body>
+
+<div class="app">
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">NP</div>
+      <div class="brand-text">
+        <h1>NETPULSE</h1>
+        <p>Network Reconnaissance &amp; Traffic Console</p>
+      </div>
+    </div>
+
+    <div class="topbar-controls">
+      <input id="targetInput" class="target-input" type="text" placeholder="Target IP or host" autocomplete="off" spellcheck="false">
+      <button id="runScanBtn" class="btn btn-primary">Run Scan</button>
+      <button id="captureBtn" class="btn btn-outline">Start Capture</button>
+      <div class="capture-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Capture stopped</span>
+      </div>
+    </div>
+  </header>
+
+  <p id="errorMsg" class="error-msg" hidden></p>
+
+  <main class="grid-main">
+
+    <section class="panel">
+      <div class="panel-head">
+        <span class="panel-title">OPEN PORTS</span>
+        <span class="panel-badge" id="openPortsCount">0</span>
+      </div>
+      <div class="panel-body" id="openPortsBody">
+        <p class="empty-note">No open ports found.</p>
+      </div>
+    </section>
+
+    <section class="panel panel-sweep">
+      <div class="panel-head">
+        <span class="panel-title">SCAN SWEEP</span>
+      </div>
+      <div class="panel-body sweep-body">
+        <div class="radar" id="radar">
+          <div class="radar-ring ring-outer"></div>
+          <div class="radar-ring ring-mid"></div>
+          <div class="radar-ring ring-inner"></div>
+          <div class="radar-sweep" id="radarSweepBeam"></div>
+          <div class="radar-dots" id="radarDots"></div>
+          <div class="radar-readout">
+            <span class="radar-pct" id="radarPct">0%</span>
+            <span class="radar-label">SCANNED</span>
+          </div>
+        </div>
+
+        <div class="exposure">
+          <div class="exposure-head">
+            <span>EXPOSURE RISK</span>
+            <span id="exposureLevel" class="exposure-level level-low">Low</span>
+          </div>
+          <div class="exposure-track">
+            <div class="exposure-fill" id="exposureFill"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel panel-stream">
+      <div class="panel-head">
+        <span class="panel-title">LIVE PACKET STREAM <span class="sim-tag">simulated</span></span>
+        <span class="panel-badge" id="packetCount">0</span>
+      </div>
+      <div class="stream-filters" id="streamFilters">
+        <button class="filter-chip active" data-proto="ALL">ALL</button>
+        <button class="filter-chip" data-proto="TCP">TCP</button>
+        <button class="filter-chip" data-proto="UDP">UDP</button>
+        <button class="filter-chip" data-proto="DNS">DNS</button>
+        <button class="filter-chip" data-proto="TLS">TLS</button>
+        <button class="filter-chip" data-proto="HTTP">HTTP</button>
+        <button class="filter-chip" data-proto="ICMP">ICMP</button>
+      </div>
+      <div class="stream-table-wrap">
+        <table class="stream-table">
+          <thead>
+            <tr>
+              <th>TIME</th><th>SRC</th><th>DST</th><th>PROTO</th><th>LEN</th><th>INFO</th>
+            </tr>
+          </thead>
+          <tbody id="streamBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <section class="stats-row">
+    <div class="stat-card">
+      <span class="stat-value" id="statPortsProbed">0/0</span>
+      <span class="stat-label">PORTS PROBED</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value stat-cyan" id="statOpenServices">0</span>
+      <span class="stat-label">OPEN SERVICES</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value stat-orange" id="statPacketsCaptured">0</span>
+      <span class="stat-label">PACKETS CAPTURED</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-value stat-red" id="statFlagged">0</span>
+      <span class="stat-label">FLAGGED SERVICES</span>
+    </div>
+  </section>
+
+  <footer class="ftr">
+    <span>Real port scanning via a local Flask backend &middot; packet stream panel is a simulated demo (browsers can't capture live network traffic) &middot; only scan hosts you own or are authorized to test</span>
+  </footer>
+
+</div>
+
+<script src="{{ url_for('static', filename='netpulse.js') }}"></script>
+</body>
+</html>

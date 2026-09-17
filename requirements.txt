@@ -1,0 +1,7 @@
+# The CLI (main.py) uses only the Python standard library.
+# The web app (app.py) requires Flask:
+flask>=3.0
+
+# Optional extras you could add later:
+# colorama==0.4.6      # for colored terminal output on Windows
+# rich==13.7.1         # for nicer progress bars / tables
